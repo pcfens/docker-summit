@@ -1,0 +1,21 @@
+version: '3.7'
+
+networks:
+  data:
+    external: true
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: a_password
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: application_password
+    volumes:
+      - ${PWD}/data:/var/lib/mysql
+    networks:
+      - data

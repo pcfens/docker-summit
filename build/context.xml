@@ -1,0 +1,23 @@
+<Context path="">
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <Manager pathname=""/>
+  <Resource
+    name="jdbc/AppDS"
+    auth="Container"
+    type="javax.sql.DataSource"
+    username="${db.username}"
+    password="${db.password}"
+    driverClassName="com.mysql.jdbc.Driver"
+    url="${db.jdbc_string}"
+    maxTotal="250"
+    maxIdle="10"
+    maxWaitMillis="3000"
+    removeAbandonedOnBorrow="true"
+    removeAbandonedOnMaintenance="true"
+    removeAbandonedTimeout="300"
+    logAbandoned="true"
+    testOnBorrow="true"
+    testOnCreate="true"
+  />
+    <ResourceLink name="schemaName" global="appSchemaName" type="java.lang.String"/>
+</Context>

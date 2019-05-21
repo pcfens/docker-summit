@@ -1,0 +1,77 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: vendor-app
+  namespace: demo
+  labels:
+    k8s-app: vendor-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: vendor-app
+  template:
+    metadata:
+      labels:
+        k8s-app: vendor-app
+        name: vendor-app
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: localhost:32000/demoapp:v1-pcfens1
+        name: vendor-app
+        resources:
+          limits:
+            cpu: 1
+            memory: 3Gi
+        env:
+        - name: CATALINA_OPTS
+          value: "-Xmx2048M -Xms1024M -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Djava.awt.headless=true -Dfile.encoding=UTF-8"
+        - name: DB_SCHEMA
+          value: app_db
+        - name: DB_USERNAME
+          value: app_user
+        - name: DB_PASSWORD
+          value: /etc/app_pw/db.password
+        - name: DB_JDBC_STRING
+          value: jdbc:mysql://172.17.0.1:3306/app_db
+        - name: JMX_PORT
+          value: "1693"
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: metrics
+          containerPort: 1693
+        volumeMounts:
+          - name: db-creds
+            mountPath: "/etc/app_pw"
+            readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /login.act
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 5
+      volumes:
+      - name: db-creds
+        secret:
+          secretName: app-pw
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vendor-app
+  name: vendor-app
+  namespace: demo
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: http
+    name: http
+    nodePort: 31500
+  selector:
+    k8s-app: vendor-app

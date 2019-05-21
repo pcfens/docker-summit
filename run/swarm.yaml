@@ -1,0 +1,41 @@
+version: '3.7'
+
+networks:
+  data:
+    external: true
+
+secrets:
+  app_pw.0:
+    external: true
+
+services:
+  app:
+    image: localhost:32000/demoapp:v1-pcfens1
+    ports:
+      - target: 8080
+        published: 80
+        mode: ingress
+        protocol: tcp
+    environment:
+      CATALINA_OPTS: -Xmx2048M -Xms1024M -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Djava.awt.headless=true -Dfile.encoding=UTF-8
+      DB_SCHEMA: app_db
+      DB_USERNAME: app_user
+      DB_PASSWORD: /run/secrets/db.password
+      DB_JDBC_STRING: jdbc:mysql://db:3306/app_db
+      JMX_PORT: 1693
+    networks:
+      - data
+      - default
+    secrets:
+      - source: app_pw.0
+        target: db.password
+        mode: 0444
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 3096M
+          cpus: "1"
+        reservations:
+          memory: 1024M
+          cpus: "1"
