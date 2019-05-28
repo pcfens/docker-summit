@@ -98,3 +98,9 @@ kubectl apply -f k8s.yaml
 # Teardown
 kubectl delete -f k8s.yaml
 ```
+
+## Useful Links
+
+- [traefik](https://traefik.io)
+- [Filebeat](https://www.elastic.co/products/beats/filebeat) (config is in this repo)
+- [Service Restarter](https://github.com/pcfens/swarm-service-restart)
