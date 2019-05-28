@@ -8,7 +8,7 @@ filebeat.autodiscover:
     - type: docker
       templates:
         - condition:
-          - contains:
+            contains:
               docker.container.labels.filebeat.enable: "true"
           config:
             - type: docker
@@ -17,7 +17,8 @@ filebeat.autodiscover:
 
 
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts:
+    - elasticsearch:5044
 
 # Useful for local debugging
 # output.console:
