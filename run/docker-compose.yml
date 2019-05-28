@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.2'
 
 networks:
   data:
@@ -23,12 +23,6 @@ services:
       JMX_PORT: 1693
     networks:
       - data
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 3096M
-          cpus: "1"
-        reservations:
-          memory: 1024M
-          cpus: "1"
+    mem_limit: 3096M
+    cpus: 1
+    cpu_count: 1
